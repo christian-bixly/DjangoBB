@@ -13,6 +13,7 @@ from django.db import transaction
 from django.db.models import Q, F
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 from django.utils.encoding import smart_str
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -148,7 +149,7 @@ def search(request):
 
     action = request.GET['action']
     if action == 'show_24h':
-        date = datetime.now() - timedelta(days=1)
+        date = timezone.now() - timedelta(days=1)
         if show_as_posts:
             context["posts"] = posts.filter(Q(created__gte=date) | Q(updated__gte=date))
         else:
@@ -282,7 +283,7 @@ def misc(request):
         action = request.GET['action']
         if action == 'markread':
             user = request.user
-            PostTracking.objects.filter(user__id=user.id).update(last_read=datetime.now(), topics=None)
+            PostTracking.objects.filter(user__id=user.id).update(last_read=timezone.now(), topics=None)
             messages.info(request, _("All topics marked as read."))
             return HttpResponseRedirect(reverse('djangobb:index'))
 

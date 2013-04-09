@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.core.cache import cache
-from django.utils import translation
+from django.utils import timezone, translation
 from django.conf import settings as global_settings
 
 from djangobb_forum import settings as forum_settings
@@ -28,7 +28,7 @@ class ForumMiddleware(object):
 
 class UsersOnline(object):
     def process_request(self, request):
-        now = datetime.now()
+        now = timezone.now()
         delta = now - timedelta(seconds=forum_settings.USER_ONLINE_TIMEOUT)
         users_online = cache.get('djangobb_users_online', {})
         guests_online = cache.get('djangobb_guests_online', {})
